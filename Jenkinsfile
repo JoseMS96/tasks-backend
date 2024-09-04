@@ -54,5 +54,12 @@ pipeline {
                 }
             }
         }
+        stage ('Prod Deploy') {
+            steps{
+                bat 'docker-compose build'
+                // Libera o terminal para o jenkins saber que finalizou o up 
+                bat 'docker-compose up -d'
+            }
+        }
     }
 }
