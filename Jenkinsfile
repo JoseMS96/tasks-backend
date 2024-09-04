@@ -39,7 +39,7 @@ pipeline {
         stage ('Deploy Frontend') {
             steps{
                 dir('frontend'){
-                    git branch: 'main', url: 'https://github.com/JoseMS96/tasks-frontend'
+                    git branch: 'master', url: 'https://github.com/JoseMS96/tasks-frontend'
                     // Aqui é em outro diretório, então tem que fazer o clean denovo
                     bat 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'TomcatLogin', path: '', url: 'http://localhost:8001')], contextPath: 'tasks', onFailure: false, war: 'target/tasks.war'
