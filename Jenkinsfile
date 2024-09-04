@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage ('Build Backend') {
+        stage ('Backend Build') {
             steps{
                 bat 'mvn clean package -DskipTests=true'
             }
@@ -23,12 +23,12 @@ pipeline {
                 }
             }
         }
-        stage ('Deploy Backend') {
+        stage ('Backend Deploy') {
             steps{
                 deploy adapters: [tomcat8(credentialsId: 'TomcatLogin', path: '', url: 'http://localhost:8001')], contextPath: 'tasks-backend', onFailure: false, war: 'target/tasks-backend.war'
             }
         }
-        stage ('API Test') {
+        stage ('API Tests') {
             steps{
                 dir('api-test') {
                     git branch: 'main', url: 'https://github.com/JoseMS96/tasks-api-test'
@@ -36,13 +36,21 @@ pipeline {
                 }
             }
         }
-        stage ('Deploy Frontend') {
+        stage ('Frontend Deploy') {
             steps{
                 dir('frontend'){
                     git branch: 'master', url: 'https://github.com/JoseMS96/tasks-frontend'
                     // Aqui é em outro diretório, então tem que fazer o clean denovo
                     bat 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'TomcatLogin', path: '', url: 'http://localhost:8001')], contextPath: 'tasks', onFailure: false, war: 'target/tasks.war'
+                }
+            }
+        }
+        stage ('Functional Tests') {
+            steps{
+                dir('functional-test') {
+                    git branch: 'main', url: 'https://github.com/JoseMS96/tasks-functional-tests'
+                    bat 'mvn test'
                 }
             }
         }
