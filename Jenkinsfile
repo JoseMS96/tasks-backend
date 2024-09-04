@@ -30,8 +30,10 @@ pipeline {
         }
         stage ('API Test') {
             steps{
-                git branch: 'main', url: 'https://github.com/JoseMS96/tasks-api-test'
-                bat 'mvn test'
+                dir('api-test') {
+                    git branch: 'main', url: 'https://github.com/JoseMS96/tasks-api-test'
+                    bat 'mvn test'
+                }
             }
         }
     }
